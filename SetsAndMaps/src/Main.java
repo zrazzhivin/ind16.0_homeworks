@@ -3,7 +3,7 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         task1(new ArrayList<>(List.of(1, 1, 2, 3, 4, 4, 5, 5, 6, 7)));
-        task2(new ArrayList<>(List.of(1, 1, 2, 3, 4, 4, 5, 5, 6, 7)));
+        task2(new ArrayList<>(List.of(8, 10, 200, 1, 1, 2, 3, 4, 4, 5, 5, 6, 7)));
         task3(new ArrayList<>(List.of("table", "pencil", "head", "head", "table")));
         task4(new ArrayList<>(List.of("один", "два","два", "три", "три", "три")));
     }
@@ -19,6 +19,7 @@ public class Main {
     }
 
     public static void task2(List<Integer> nums) {
+        Collections.sort(nums);
         Set<Integer> uniqueNums = new HashSet<>();
 
         for (Integer num : nums) {
