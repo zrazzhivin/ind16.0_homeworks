@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FacultyStudentImpl implements FacultyService {
+public class FacultyServiceImpl implements FacultyService {
 
     private final FacultyRepository facultyRepository;
 
-    public FacultyStudentImpl(FacultyRepository facultyRepository) {
+    public FacultyServiceImpl(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
     }
 
@@ -47,5 +47,10 @@ public class FacultyStudentImpl implements FacultyService {
                 .stream()
                 .filter(it -> it.getColor().equals(color))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Faculty> getByNameOrColorIgnoreCase(String name, String color) {
+        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 }

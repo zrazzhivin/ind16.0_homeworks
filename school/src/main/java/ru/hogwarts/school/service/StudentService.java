@@ -16,4 +16,6 @@ public interface StudentService {
 
     List<Student> getByAge(int age);
 
+    List<Student> getByAgeBetween(int ageFrom, int ageTo);
+
 }
