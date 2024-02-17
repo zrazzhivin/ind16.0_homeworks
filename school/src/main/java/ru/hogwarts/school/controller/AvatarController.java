@@ -8,7 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.hogwarts.school.dto.AvatarDTO;
+import ru.hogwarts.school.mapper.AvatarMapper;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.service.AvatarService;
 
@@ -17,6 +20,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("avatars")
@@ -24,8 +29,22 @@ public class AvatarController {
 
     private final AvatarService avatarService;
 
-    public AvatarController(AvatarService avatarService) {
+    private final AvatarMapper avatarMapper;
+
+    public AvatarController(AvatarService avatarService, AvatarMapper avatarMapper) {
         this.avatarService = avatarService;
+        this.avatarMapper = avatarMapper;
+    }
+
+    @GetMapping
+    public List<AvatarDTO> getPaginatedAvatars(
+            @RequestParam int pageNumber,
+            @RequestParam int pageSize
+    ) {
+        return avatarService.getPaginatedAvatars(pageNumber, pageSize)
+                .stream()
+                .map(avatarMapper::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping(value = "/{id}/avatar-from-db")
@@ -47,8 +66,8 @@ public class AvatarController {
         Avatar avatar = avatarService.findAvatar(id);
         Path path = Path.of(avatar.getFilePath());
 
-        try(InputStream is = Files.newInputStream(path);
-            OutputStream os = response.getOutputStream()) {
+        try (InputStream is = Files.newInputStream(path);
+             OutputStream os = response.getOutputStream()) {
             response.setStatus(200);
             response.setContentType(avatar.getMediaType());
             response.setContentLength((int) avatar.getFileSize());
