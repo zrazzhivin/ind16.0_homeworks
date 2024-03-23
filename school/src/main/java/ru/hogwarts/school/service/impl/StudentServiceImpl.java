@@ -109,4 +109,82 @@ public class StudentServiceImpl implements StudentService {
                 .average()
                 .orElse(0.0);
     }
+
+    @Override
+    public void printParallel() {
+        List<String> names = studentRepository.findAll()
+                .stream()
+                .map(Student::getName)
+                .toList();
+
+        printName(names.get(0));
+        printName(names.get(1));
+
+        Object lock = new Object();
+
+        new Thread(() -> {
+            synchronized (lock) {
+                try {
+                    Thread.sleep(10 * 1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                printName(names.get(2));
+                printName(names.get(3));
+            }
+        }).start();
+
+        new Thread(() -> {
+            synchronized (lock) {
+                printName(names.get(4));
+                printName(names.get(5));
+            }
+        }).start();
+    }
+
+    @Override
+    public void printSynchronized() {
+        List<String> names = studentRepository.findAll()
+                .stream()
+                .map(Student::getName)
+                .toList();
+
+        printSynchronizedName(names.get(0));
+        printSynchronizedName(names.get(1));
+
+        new Thread(() -> {
+            printSynchronizedName(names.get(2));
+            printSynchronizedName(names.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printSynchronizedName(names.get(4));
+            printSynchronizedName(names.get(5));
+        }).start();
+    }
+
+    private void printName(String name) {
+        System.out.println(Thread.currentThread().getName() + ": " + name);
+    }
+
+    private synchronized void printSynchronizedName(String name) {
+        // когда поток заходит сюда
+        // он захватываем монитор (либо мьютекс - mutual extension) у объекта this
+        System.out.println(Thread.currentThread().getName() + ": " + name);
+    }
+
+    private static synchronized void printStaticSynchronizedName(String name) {
+        // когда поток заходит сюда
+        // он захватываем монитор (либо мьютекс - mutual extension) у объекта StudentServiceImpl.class
+
+        System.out.println(Thread.currentThread().getName() + ": " + name);
+    }
+
+    private void printSynchronizedName1(String name) {
+        synchronized (this) {
+            // когда поток заходит сюда
+            // он захватываем монитор (либо мьютекс - mutual extension) у объекта this
+            System.out.println(Thread.currentThread().getName() + ": " + name);
+        }
+    }
 }
