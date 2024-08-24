@@ -88,24 +88,4 @@ public class StudentController {
     public List<Student> getLastFive() {
         return studentService.getLastFive();
     }
-
-    @GetMapping("startsWithA")
-    public List<String> getAllStudentsStartsWithA() {
-        return studentService.getAllStudentsStartsWithA();
-    }
-
-    @GetMapping("averageAgeWithStreams")
-    public Double getAverageAgeWithStreams() {
-        return studentService.getAverageAgeWithStreams();
-    }
-
-    @GetMapping("print-parallel")
-    public void printParallel() {
-        studentService.printParallel();
-    }
-
-    @GetMapping("print-synchronized")
-    public void printSynchronized() {
-        studentService.printSynchronized();
-    }
 }

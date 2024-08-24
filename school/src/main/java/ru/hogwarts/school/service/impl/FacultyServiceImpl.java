@@ -62,13 +62,4 @@ public class FacultyServiceImpl implements FacultyService {
                 .map(Faculty::getStudents)
                 .orElse(null);
     }
-
-    @Override
-    public String getLongestName() {
-        return facultyRepository.findAll()
-                .stream()
-                .map(Faculty::getName)
-                .max(Comparator.comparingInt(String::length))
-                .orElse("Нет данных");
-    }
 }
